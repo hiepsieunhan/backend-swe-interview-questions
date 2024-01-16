@@ -40,11 +40,14 @@ To be defined
 
 ## What will happen if some "packet" is missing on the way?
 
-When a packet is missing, network congestion is assumed to happen. TCP has its own way to deal with network congestion. It is called TCP Congestion control. It starts when slow-start phrase, in which the transmit rate (congestion window) grows exponentially, doubling each round trip time. When a packet is lost, congestion avoidance begins. The transmit rate is cut into half, then increase linearly, usually by 1 each RTT.
+When a packet is missing, here is something that could happen:
+- Sender is supposed to receive ACK from receiver but after timeout, it might resend the package.
+- Receiver is supposed to receive the package but after a timeout it could request the sender to resend the missing packages (selective retransmission)
+- Network congestion is assumed to happen. TCP has its own way to deal with network congestion. It is called TCP Congestion control. It starts when slow-start phrase, in which the transmit rate (congestion window) grows exponentially, doubling each round trip time. When a packet is lost, congestion avoidance begins. The transmit rate is cut into half, then increase linearly, usually by 1 each RTT.
 
 ## How to detect the appropriate number of packets to send (speed of sending packet)?
 
-Like above.
+Congession control
 
 ## How TCP close the connection?
 
@@ -53,13 +56,20 @@ Step 2 and 3 can be merged by one, so it will be 3-way handshake instead.
 
 ## What if the internet is dropped in the middle of the connection? Or in case one peer is crash?
 
-To be defined
+The sender will initiate retransmissions after a timeout, attempting to reach the unreachable peer. If it remains unresponsive for an extended period, the sender may eventually consider the connection as failed and close it.
 
 ## How long you can keep a TCP connection alive?
 
-To be defined
+Once a TCP connection has been established, that connection is defined to be valid until one side closes it. Once the connection has entered the connected state, it will remain connected indefinitely. But, in reality, the connection will not last indefinitely. Many firewall or NAT systems will close a connection if there has been no activity in some time period. The Keep Alive signal can be used to trick intermediate hosts to not close the connection due to inactivity.
 
 ## What are the differences between TCP and UDP? And in which case we use which?
+
+- Connection-Oriented vs. Connectionless
+- Reliability
+- Order of Delivery
+- Flow Control
+- Header Overhead (TCP is bigger due to the ISN, ACK, and additional data,..)
+- Error Checking (TCP retransmit but UDP only send and forget)
 
 The key difference between TCP and UDP is TCP has a mechanism to resend loss packets, but UDP doesn't. So TCP suits in the case where packet loss can not be acceptable, like transfer file, request... UDP suits in the case packet loss can be tolerated, like in real-time voice/video calls.
 
